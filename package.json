@@ -1,0 +1,50 @@
+{
+  "name": "github-issues-viewer",
+  "homepage": "https://qiwihui.github.io/github-issue-viewer/",
+  "version": "0.1.0",
+  "author": {
+    "name": "qiwihui",
+    "email": "qwh005007@gmail.com"
+  },
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^3.4.0",
+    "@material-ui/icons": "^3.0.1",
+    "@octokit/rest": "^18.12.0",
+    "@trainline/react-skeletor": "^1.0.2",
+    "classnames": "^2.2.6",
+    "dayjs": "^1.7.7",
+    "deepmerge": "^2.2.1",
+    "gh-pages": "^3.2.3",
+    "prismjs": "^1.15.0",
+    "prop-types": "^15.6.2",
+    "query-string": "^6.2.0",
+    "react": "^16.6.1",
+    "react-dom": "^16.14.0",
+    "react-ga": "^2.5.5",
+    "react-highlight": "^0.12.0",
+    "react-markdown": "^4.0.3",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.1",
+    "recompose": "^0.30.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src",
+    "deploy": "npm run build && gh-pages -d build"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "devDependencies": {
+    "@babel/core": "^7.1.5",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-import": "^1.11.0"
+  }
+}
