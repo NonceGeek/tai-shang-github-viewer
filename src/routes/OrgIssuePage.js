@@ -120,7 +120,10 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
   const labelSwitch = [
     {code: '', title: 'No value'},
     {code: 'enhancement', title: 'enhancement'},
-    {code: 'bug', title: 'bug'}
+    {code: 'bug', title: 'bug'},
+    {code: 'question', title: 'question'},
+    {code: 'documentation', title: 'documentation'},
+    {code: 'wontfix', title: 'wontfix'},
   ]
   const handleLabelSwitch = (e) => {
     setLabel(e.target.value);
