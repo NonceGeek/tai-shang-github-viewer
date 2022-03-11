@@ -54,6 +54,7 @@ const IssueList = (props) => {
                     commentCount={issue.comments}
                     state={issue.state == "open" ? IssueState.OPEN : IssueState.CLOSED}
                     tabIndex={-1}
+                    labels={issue.labels}
                   />
                 </Link>
               ))}

@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import queryString from 'query-string';
 import { Link } from 'react-router-dom';
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import { Octokit } from "@octokit/rest";
+import { Select, MenuItem, Button, InputLabel } from "@material-ui/core";
 
 import Content from '../components/LayoutContent';
 import Header from '../components/LayoutHeader';
@@ -37,6 +37,9 @@ const styles = theme => ({
   },
   searchForm: {
     paddingLeft: theme.spacing.unit * 2
+  },
+  label: {
+    marginRight: 10,
   }
 });
 
@@ -53,7 +56,8 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
   const { _state = IssueState.OPEN } = queryString.parse(location.search);
   const [stateValue, setStateValue] = useState(_state.toLowerCase());
   const [isError, setIsError] = useState(false);
-
+  const [open, setOpen] = useState(false);
+  const [label, setLabel] = useState('');
   const [org, setOrg] = useState({});
   const [filterValue, setFilterValue] = useState('');
 
@@ -86,7 +90,6 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
       setIssues(data.items);
       setLoading(false);
     }).catch(err => {
-      console.log(err);
       setLoading(false);
       setIsError(true);
     });
@@ -114,6 +117,22 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
     setFilterValue(q);
   }
 
+  const labelSwitch = [
+    {code: '', title: 'No value'},
+    {code: 'enhancement', title: 'enhancement'},
+    {code: 'bug', title: 'bug'}
+  ]
+  const handleLabelSwitch = (e) => {
+    setLabel(e.target.value);
+    if (filterValue === '' || filterValue.search(/label:\w+/g) == -1){
+      setFilterValue(e.target.value !== '' ? `${filterValue} label:${e.target.value}`: filterValue);
+      return
+    }
+    let _fv = filterValue.replace(/label:\w+/g, e.target.value !== '' ? `label:${e.target.value}`: '');
+    console.log(_fv);
+    setFilterValue(_fv)
+  }
+
   return (
     <>
       <Header>
@@ -129,6 +148,34 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
               className: classes.searchInput,
             }}
           />
+          <Button
+            color="inherit"
+            onClick={() => {
+              setOpen(!open);
+            }}
+          >
+            <InputLabel className={classes.label} id="select-label-label">Label</InputLabel>
+            <Select
+              // className={classes.root}
+              lavel='Label'
+              labelId="select-label-label"
+              id="select-label"
+              onClick={() => setOpen(!open)}
+              onClose={() => {}}
+              onOpen={() => {}}
+              value={label==='' ? '' : label}
+              onChange={handleLabelSwitch}
+              open={open}
+            >
+              {labelSwitch.map((lang, index) => {
+                return (
+                  <MenuItem key={index} value={lang.code}>
+                    {lang.title}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </Button>
         </form>
         {isError? <MessageError /> : loading ?
           <List>
@@ -162,6 +209,7 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
                       state={issue.state === "open" ? IssueState.OPEN : IssueState.CLOSED}
                       tabIndex={-1}
                       repository={issue.repository_url.split('https://api.github.com/repos/')[1]}
+                      labels={issue.labels}
                     />
                   </Link>
                 ))}

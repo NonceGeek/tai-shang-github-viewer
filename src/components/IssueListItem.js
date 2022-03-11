@@ -6,6 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import CommentIcon from '@material-ui/icons/ModeCommentOutlined';
 import ListItem from '@material-ui/core/ListItem';
+import { Chip } from '@material-ui/core';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
@@ -36,7 +37,10 @@ const styles = theme => ({
 const Comment = withSkeleton(CommentIcon);
 const StateIcon = withSkeleton(IssueStateIcon);
 
-const IssueListItem = ({ classes, title, number, createdAt, state, author, commentCount, loading, repository, ...other }) => (
+const IssueListItem = ({ classes, title, number, createdAt, state, author, commentCount, loading, repository, labels, ...other }) => {
+  
+  const labelChips = labels.map(label => <Chip size="small" label={label.name} style={{height: '24px', background: `${label.color}`}} variant="outlined" />);
+  return (
   <ListItem className={cx(classes.root, { loading })} button {...other}>
     <ListItemIcon className={classes.listItemIcon}>
       <StateIcon state={state} />
@@ -55,7 +59,7 @@ const IssueListItem = ({ classes, title, number, createdAt, state, author, comme
       }
       secondary={
         <Typography variant="caption" noWrap color="textSecondary">
-          <Span>#{number} opened <TimeAgo date={createdAt} /> by {author}</Span>
+          <Span>#{number} opened <TimeAgo date={createdAt} /> by {author} {labelChips}</Span>
         </Typography>
       }
     />
@@ -68,7 +72,7 @@ const IssueListItem = ({ classes, title, number, createdAt, state, author, comme
       </ListItemIcon>
     )}
   </ListItem>
-);
+)};
 
 IssueListItem.propTypes = {
   title: PropTypes.string,
@@ -80,11 +84,13 @@ IssueListItem.propTypes = {
   tabIndex: PropTypes.number,
   loading: PropTypes.bool,
   repository: PropTypes.string,
+  labels: PropTypes.array,
 };
 
 IssueListItem.defaultProps = {
   author: 'unknown',
-  repository: ''
+  repository: '',
+  labels: []
 };
 
 export default compose(

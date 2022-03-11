@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import queryString from 'query-string';
 import { Octokit } from "@octokit/rest";
+import { Select, MenuItem, Button, InputLabel } from "@material-ui/core";
 
 import IssueList from '../components/IssueList';
 import Header from '../components/LayoutHeader';
@@ -38,6 +39,9 @@ const styles = theme => ({
   },
   searchForm: {
     paddingLeft: theme.spacing.unit * 2
+  },
+  label: {
+    marginRight: 10,
   }
 });
 
@@ -52,6 +56,9 @@ const RepoPage = (props) => {
   const [stateValue, setStateValue] = useState(_state);
   const [filterValue, setFilterValue] = useState('');
   const inputRef = useRef(null)
+  const [open, setOpen] = useState(false);
+  const [label, setLabel] = useState('');
+  const [labels, setLabels] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -60,6 +67,12 @@ const RepoPage = (props) => {
         repo: name,
       }).then(res => res.data);
       setRepository(data);
+      let _labels = await octokit.rest.issues.listLabelsForRepo({
+        owner,
+        repo: name,
+      }).then(res => res.data);
+      _labels.splice(0, 0, { name: '', id: 0 })
+      setLabels(_labels);
     }
     getData();
   }, [])
@@ -74,6 +87,22 @@ const RepoPage = (props) => {
     e.preventDefault();
     const q = inputRef.current.value;
     setFilterValue(q);
+  }
+
+  // const labelSwitch = [
+  //   {code: '', title: 'No value'},
+  //   {code: 'enhancement', title: 'enhancement'},
+  //   {code: 'bug', title: 'bug'}
+  // ]
+  const handleLabelSwitch = (e) => {
+    setLabel(e.target.value);
+    if (filterValue === '' || filterValue.search(/label:\w+/g) == -1){
+      setFilterValue(e.target.value !== '' ? `${filterValue} label:${e.target.value}`: filterValue);
+      return
+    }
+    let _fv = filterValue.replace(/label:\w+/g, e.target.value !== '' ? `label:${e.target.value}`: '');
+    console.log(_fv);
+    setFilterValue(_fv)
   }
 
   return (
@@ -91,6 +120,34 @@ const RepoPage = (props) => {
               className: classes.searchInput,
             }}
           />
+          <Button
+            color="inherit"
+            onClick={() => {
+              setOpen(!open);
+            }}
+          >
+            <InputLabel className={classes.label} id="select-label-label">Label</InputLabel>
+            <Select
+              // className={classes.root}
+              lavel='Label'
+              labelId="select-label-label"
+              id="select-label"
+              onClick={() => setOpen(!open)}
+              onClose={() => {}}
+              onOpen={() => {}}
+              value={label==='' ? '' : label}
+              onChange={handleLabelSwitch}
+              open={open}
+            >
+              {labels.map((lang, index) => {
+                return (
+                  <MenuItem key={index} value={lang.name}>
+                    {lang.name ? lang.name : 'No value'}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </Button>
         </form>
         <IssueListFilter
           className={classes.filters}
