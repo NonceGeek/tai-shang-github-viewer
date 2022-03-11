@@ -15,7 +15,7 @@ MessageError.propTypes = {
 
 MessageError.defaultProps = {
   title: 'Something went wrong',
-  description: 'There was a problem loading data. Check your internet and try again.',
+  description: 'There was a problem loading data. Maybe it is due to Github API rate limit or network issue. Check your internet and try again.',
   icon: <ErrorIcon color="error" />,
 };
 

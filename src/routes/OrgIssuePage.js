@@ -17,7 +17,7 @@ import Message from '../components/Message';
 import Pagination from '../components/Pagination';
 import { IssueState } from '../constants';
 import InputSearch from '../components/InputSearch';
-// import MessageError from '../components/MessageError';
+import MessageError from '../components/MessageError';
 
 const styles = theme => ({
   content: {
@@ -48,10 +48,11 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
 
   const octokit = new Octokit({});
   const [issues, setIssues] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const { _state = IssueState.OPEN } = queryString.parse(location.search);
   const [stateValue, setStateValue] = useState(_state.toLowerCase());
+  const [isError, setIsError] = useState(false);
 
   const [org, setOrg] = useState({});
   const [filterValue, setFilterValue] = useState('');
@@ -74,12 +75,21 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
   }
 
   const getIssues = async (page) => {
+    setLoading(true);
+    setIsError(false);
     let q = `${filterValue}+org:${owner}+type:issue+state:${stateValue}`;
-    let data = await octokit.rest.search.issuesAndPullRequests({
+    await octokit.rest.search.issuesAndPullRequests({
       q,
       page,
-    }).then(res => res.data);
-    setIssues(data.items);
+    }).then(res => {
+      let data = res.data;
+      setIssues(data.items);
+      setLoading(false);
+    }).catch(err => {
+      console.log(err);
+      setLoading(false);
+      setIsError(true);
+    });
   }
 
   const onLoadNext = async () => {
@@ -120,7 +130,7 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
             }}
           />
         </form>
-        {loading ?
+        {isError? <MessageError /> : loading ?
           <List>
             <IssueListItem loading />
             <IssueListItem loading />
@@ -129,7 +139,7 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
           </List> :
           issues.length === 0 ? (<Message
             title="Oops"
-            description={`We couldn't find results for "${filterValue}"`}
+            description={filterValue !== '' ? `We couldn't find any results for ${filterValue}` : `We couldn't find any results`}
           />) : (
             <>
               <IssueListFilter

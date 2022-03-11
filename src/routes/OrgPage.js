@@ -14,7 +14,7 @@ import Content from '../components/LayoutContent';
 import RepoListItem from '../components/RepoListItem';
 import Message from '../components/Message';
 import Pagination from '../components/Pagination';
-// import MessageError from '../components/MessageError';
+import MessageError from '../components/MessageError';
 
 const styles = theme => ({
   content: {
@@ -58,9 +58,9 @@ const OrgPage = ({ classes, children, match, location }) => {
   const octokit = new Octokit({});
   const [repos, setRepos] = useState([]);
   const [org, setOrg] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
-
+  const [isError, setIsError] = useState(false);
   useEffect(() => {
     loadMore(page);
     getOrg();
@@ -74,11 +74,18 @@ const OrgPage = ({ classes, children, match, location }) => {
   }
 
   const loadMore = async (page) => {
+    setLoading(true);
+    setIsError(false);
     let data = await octokit.rest.repos.listForOrg({
       org: owner,
       page
-    }).then(res => res.data);
-    setRepos(data);
+    }).then(res => {
+      let data = res.data
+      setRepos(data);
+      setLoading(false);
+    }).catch(err => {
+      setIsError(true);
+    });
   }
 
   const onLoadNext = async () => {
@@ -98,10 +105,10 @@ const OrgPage = ({ classes, children, match, location }) => {
         <OrgHeader org={org} />
       </Header>
       <Content className={classes.content}>
-        {/* <Typography className={classes.title} variant="h6" gutterBottom>
-                    Search Repositories
-                </Typography> */}
-        {loading ?
+        {isError ? (<Message
+            title="Oops"
+            description={`We couldn't find repo results for "${owner}"`}
+          />) : loading ?
           <List>
             <RepoListItem loading />
             <RepoListItem loading />
@@ -110,7 +117,7 @@ const OrgPage = ({ classes, children, match, location }) => {
           </List> :
           repos.length === 0 ? (<Message
             title="Oops"
-            description={`We couldn't find results for "${q}"`}
+            description={`We couldn't find repo results for "${owner}"`}
           />) : (
             <>
               <List>
