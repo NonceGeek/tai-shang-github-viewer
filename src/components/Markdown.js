@@ -35,6 +35,7 @@ const renderers = {
 
 const Markdown = ({ classes, className, ...props }) => (
   <ReactMarkdown
+    escapeHtml={false}
     className={cx(classes.root, className)}
     renderers={renderers}
     {...props}
