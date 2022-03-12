@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import queryString from 'query-string';
 import { Link } from 'react-router-dom';
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
 import { Octokit } from "@octokit/rest";
 
@@ -14,7 +13,6 @@ import Content from '../components/LayoutContent';
 import RepoListItem from '../components/RepoListItem';
 import Message from '../components/Message';
 import Pagination from '../components/Pagination';
-import MessageError from '../components/MessageError';
 
 const styles = theme => ({
   content: {
@@ -50,7 +48,7 @@ const styles = theme => ({
 // const DEFAULT_QUERY = 'stars:>1000';
 
 const OrgPage = ({ classes, children, match, location }) => {
-  const { q } = queryString.parse(location.search);
+  // const { q } = queryString.parse(location.search);
 
   //   const { classes, match, location } = props;
   const { owner } = match.params;

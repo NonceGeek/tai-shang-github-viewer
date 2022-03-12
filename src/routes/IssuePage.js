@@ -10,7 +10,6 @@ import Content from '../components/LayoutContent';
 import IssueHeader from '../components/IssueHeader';
 import IssueComment from '../components/IssueComment';
 import IssueCommentList from '../components/IssueCommentList';
-import MessageError from '../components/MessageError';
 
 const styles = {
   breadcrumb: {

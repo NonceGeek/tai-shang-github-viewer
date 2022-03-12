@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import List from '@material-ui/core/List';
@@ -52,7 +52,7 @@ const IssueList = (props) => {
                     author={issue.user ? issue.user.login : undefined}
                     createdAt={issue.created_at}
                     commentCount={issue.comments}
-                    state={issue.state == "open" ? IssueState.OPEN : IssueState.CLOSED}
+                    state={issue.state === "open" ? IssueState.OPEN : IssueState.CLOSED}
                     tabIndex={-1}
                     labels={issue.labels}
                   />
