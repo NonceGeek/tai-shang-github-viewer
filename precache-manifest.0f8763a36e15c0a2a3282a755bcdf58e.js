@@ -1,7 +1,7 @@
 self.__precacheManifest = [
   {
-    "revision": "058a693a8c4803ae0a66",
-    "url": "/github-issue-viewer/static/js/main.058a693a.chunk.js"
+    "revision": "90c70ac874bf7e7cf04c",
+    "url": "/github-issue-viewer/static/js/main.90c70ac8.chunk.js"
   },
   {
     "revision": "e011e31d23c0d72edd02",
@@ -12,7 +12,7 @@ self.__precacheManifest = [
     "url": "/github-issue-viewer/static/js/runtime~main.8e0ea9fe.js"
   },
   {
-    "revision": "a58882be6d2ddaeceb3a4e9733771e1a",
+    "revision": "a3daec7d63989dc0ce0f81b144ae89ba",
     "url": "/github-issue-viewer/index.html"
   }
 ];
