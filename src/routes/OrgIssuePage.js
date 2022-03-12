@@ -127,7 +127,7 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
   ]
   const handleLabelSwitch = (e) => {
     setLabel(e.target.value);
-    if (filterValue === '' || filterValue.search(/label:\w+/g) == -1){
+    if (filterValue === '' || filterValue.search(/label:\w+/g) === -1){
       setFilterValue(e.target.value !== '' ? `${filterValue} label:${e.target.value}`: filterValue);
       return
     }

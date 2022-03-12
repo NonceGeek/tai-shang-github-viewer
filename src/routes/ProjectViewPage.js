@@ -37,16 +37,34 @@ const ProjectViewPage = (props) => {
     setOrg(data);
   }
 
-  const iframe = `<iframe src="https://github.com/orgs/${owner}/projects/${projectId}/views/${viewId}" width="100%" height="450"></iframe>`; 
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then( registration => {
+        console.log('Service Worker is ready :^)', registration);
+        registration.active.postMessage("Hi service worker");
+      });
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.ready.then(registration => {
+          console.log('Iframe Service Worker registration successful with scope: ', registration.scope);
+          const sw = registration.installing || registration.waiting || registration.active
+          sw.postMessage({ code: "get-client-id" });
+        }).catch(err => {
+          console.log('Service Worker registration failed: ', err);
+        });
+      });
+    }
+  }, [])
+
+  const iframe = `<iframe src="https://github.com/orgs/${owner}/projects/${projectId}/views/${viewId}" width="100%" height="450"></iframe>`;
 
   return (
     <>
       <Header>
         <OrgHeader org={org} />
       </Header>
-      <div>          
-        <iframe src={`https://github.com/orgs/${owner}/projects/${projectId}/views/${viewId}`} width="100%" height="450"/>
-        {/* <div dangerouslySetInnerHTML={{__html: iframe }} />       */}
+      <div>
+        <iframe src={`https://github.com/orgs/${owner}/projects/${projectId}/views/${viewId}`} width="100%" height="450" />
+        <div dangerouslySetInnerHTML={{ __html: iframe }} />
       </div>
     </>
   );

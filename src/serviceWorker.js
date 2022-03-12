@@ -32,26 +32,41 @@ export function register(config) {
       return;
     }
 
+    window.addEventListener('install', e => {
+      console.log("install", e.type)
+      window.skipWaiting() // always activate updated SW immediately
+    })
+    window.addEventListener('activate', e => console.log("activate", e.type))
+
     window.addEventListener('load', () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
       if (isLocalhost) {
+        registerValidSW(swUrl, config);
         // This is running on localhost. Let's check if a service worker still exists or not.
         checkValidServiceWorker(swUrl, config);
-
+        
         // Add some additional logging to localhost, pointing developers to the
         // service worker/PWA documentation.
-        navigator.serviceWorker.ready.then((registration) => {
-          console.log('Registration succeeded. Scope is ' + registration.scope);
-          registration.active.postMessage({ code: "get-client-id" });
-          console.log(
-            'This web app is being served cache-first by a service ' +
-            'worker. To learn more, visit http://bit.ly/CRA-PWA'
-          );
-        });
+        // navigator.serviceWorker.ready.then((registration) => {
+        //   console.log('Registration succeeded. Scope is ' + registration.scope);
+        //   registration.active.postMessage({ code: "get-client-id" });
+        //   console.log(
+        //     'This web app is being served cache-first by a service ' +
+        //     'worker. To learn more, visit http://bit.ly/CRA-PWA'
+        //   );
+        // });
       } else {
         // Is not localhost. Just register service worker
         registerValidSW(swUrl, config);
+        // navigator.serviceWorker.ready.then((registration) => {
+        //   console.log('Registration succeeded. Scope is ' + registration.scope);
+        //   registration.active.postMessage({ code: "get-client-id" });
+        //   console.log(
+        //     'This web app is being served cache-first by a service ' +
+        //     'worker. To learn more, visit http://bit.ly/CRA-PWA'
+        //   );
+        // });
       }
     });
 

@@ -19,7 +19,10 @@ const Routes = () => (
     <Route path="/:owner/issues" exact component={OrgIssuePage} />
     <Route path="/:owner/:name" exact component={RepoPage} />
     <Route path="/:owner/:name/issues/:number" exact component={IssuePage} />
-    <Route path="/:owner/projects/:projectId/views/:viewId" exact component={ProjectViewPage} />
+    <Route path="/:owner/projects/:projectId/views/:viewId" exact component={() => {
+      window.location.href = 'https://github.com/orgs/WeLightProject/projects/4/views/1';
+      return null;
+    }} />
     <Route component={NotFoundPage} />
   </Switch>
 );
