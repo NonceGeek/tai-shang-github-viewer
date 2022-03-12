@@ -1,8 +1,8 @@
 {
-  "main.js": "/github-issue-viewer/static/js/main.717a07ee.chunk.js",
-  "static/js/1.e011e31d.chunk.js": "/github-issue-viewer/static/js/1.e011e31d.chunk.js",
+  "main.js": "/github-issue-viewer/static/js/main.6a214858.chunk.js",
+  "static/js/1.87fe180b.chunk.js": "/github-issue-viewer/static/js/1.87fe180b.chunk.js",
   "runtime~main.js": "/github-issue-viewer/static/js/runtime~main.8e0ea9fe.js",
   "index.html": "/github-issue-viewer/index.html",
-  "precache-manifest.79f8569bf75fbbd27d165cd4b1f29efd.js": "/github-issue-viewer/precache-manifest.79f8569bf75fbbd27d165cd4b1f29efd.js",
+  "precache-manifest.576e7068e343a2743ccd8028f552ee06.js": "/github-issue-viewer/precache-manifest.576e7068e343a2743ccd8028f552ee06.js",
   "service-worker.js": "/github-issue-viewer/service-worker.js"
 }
