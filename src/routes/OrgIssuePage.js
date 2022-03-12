@@ -81,6 +81,7 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
   const getIssues = async (page) => {
     setLoading(true);
     setIsError(false);
+    console.log(stateValue);
     let q = `${filterValue}+org:${owner}+type:issue+state:${stateValue}`;
     await octokit.rest.search.issuesAndPullRequests({
       q,
@@ -118,24 +119,24 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
   }
 
   const labelSwitch = [
-    {code: '', title: 'No value'},
-    {code: 'enhancement', title: 'enhancement'},
-    {code: 'bug', title: 'bug'},
-    {code: 'question', title: 'question'},
-    {code: 'documentation', title: 'documentation'},
-    {code: 'wontfix', title: 'wontfix'},
-    {code: 'has reward', title: 'has reward'},
-    {code: 'paid money', title: 'paid money'},
-    {code: 'recorded', title: 'recorded'},
-    {code: 'paid nft', title: 'paid nft'},
+    { code: '', title: 'No value' },
+    { code: 'enhancement', title: 'enhancement' },
+    { code: 'bug', title: 'bug' },
+    { code: 'question', title: 'question' },
+    { code: 'documentation', title: 'documentation' },
+    { code: 'wontfix', title: 'wontfix' },
+    { code: 'has reward', title: 'has reward' },
+    { code: 'paid money', title: 'paid money' },
+    { code: 'recorded', title: 'recorded' },
+    { code: 'paid nft', title: 'paid nft' },
   ]
   const handleLabelSwitch = (e) => {
     setLabel(e.target.value);
-    if (filterValue === '' || filterValue.search(/label:"[\w\s]+"/g) === -1){
-      setFilterValue(e.target.value !== '' ? `${filterValue} label:"${e.target.value}"`: filterValue);
+    if (filterValue === '' || filterValue.search(/label:"[\w\s]+"/g) === -1) {
+      setFilterValue(e.target.value !== '' ? `${filterValue} label:"${e.target.value}"` : filterValue);
       return
     }
-    let _fv = filterValue.replace(/label:"[\w\s]+"/g, e.target.value !== '' ? `label:"${e.target.value}"`: '');
+    let _fv = filterValue.replace(/label:"[\w\s]+"/g, e.target.value !== '' ? `label:"${e.target.value}"` : '');
     console.log(_fv);
     setFilterValue(_fv)
   }
@@ -168,9 +169,9 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
               labelId="select-label-label"
               id="select-label"
               onClick={() => setOpen(!open)}
-              onClose={() => {}}
-              onOpen={() => {}}
-              value={label==='' ? '' : label}
+              onClose={() => { }}
+              onOpen={() => { }}
+              value={label === '' ? '' : label}
               onChange={handleLabelSwitch}
               open={open}
             >
@@ -184,17 +185,15 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
             </Select>
           </Button>
         </form>
-        {isError? <MessageError /> : loading ?
+        {isError ? <MessageError /> : loading ?
           <List>
             <IssueListItem loading />
             <IssueListItem loading />
             <IssueListItem loading />
             <IssueListItem loading />
           </List> :
-          issues.length === 0 ? (<Message
-            title="Oops"
-            description={filterValue !== '' ? `We couldn't find any results for ${filterValue}` : `We couldn't find any results`}
-          />) : (
+
+          (
             <>
               <IssueListFilter
                 className={classes.filters}
@@ -204,31 +203,35 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
                 owner={owner}
                 q={filterValue}
               />
-              <List>
-                {issues.map(issue => (
-                  <Link key={issue.id} to={`/${issue.repository_url.split('https://api.github.com/repos/')[1]}/issues/${issue.number}`}>
-                    <IssueListItem
-                      key={issue.id}
-                      number={issue.number}
-                      title={issue.title}
-                      author={issue.user ? issue.user.login : undefined}
-                      createdAt={issue.created_at}
-                      commentCount={issue.comments}
-                      state={issue.state === "open" ? IssueState.OPEN : IssueState.CLOSED}
-                      tabIndex={-1}
-                      repository={issue.repository_url.split('https://api.github.com/repos/')[1]}
-                      labels={issue.labels}
-                    />
-                  </Link>
-                ))}
-              </List>
-              <Pagination
-                page={page}
-                onLoadNext={onLoadNext}
-                hasNextPage={hasNextPage}
-                hasPreviousPage={hasPreviousPage}
-                onLoadPrevious={onLoadPrevious}
-              />
+              {issues.length === 0 ? (<Message
+                title="Oops"
+                description={filterValue !== '' ? `We couldn't find ${stateValue} issues for ${filterValue}` : `We couldn't find ${stateValue} issues`}
+              />) : (<>
+                <List>
+                  {issues.map(issue => (
+                    <Link key={issue.id} to={`/${issue.repository_url.split('https://api.github.com/repos/')[1]}/issues/${issue.number}`}>
+                      <IssueListItem
+                        key={issue.id}
+                        number={issue.number}
+                        title={issue.title}
+                        author={issue.user ? issue.user.login : undefined}
+                        createdAt={issue.created_at}
+                        commentCount={issue.comments}
+                        state={issue.state === "open" ? IssueState.OPEN : IssueState.CLOSED}
+                        tabIndex={-1}
+                        repository={issue.repository_url.split('https://api.github.com/repos/')[1]}
+                        labels={issue.labels}
+                      />
+                    </Link>
+                  ))}
+                </List>
+                <Pagination
+                  page={page}
+                  onLoadNext={onLoadNext}
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  onLoadPrevious={onLoadPrevious}
+                /></>)}
             </>)
         }
       </Content>
