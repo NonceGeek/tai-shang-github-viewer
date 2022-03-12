@@ -124,14 +124,18 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
     {code: 'question', title: 'question'},
     {code: 'documentation', title: 'documentation'},
     {code: 'wontfix', title: 'wontfix'},
+    {code: 'has reward', title: 'has reward'},
+    {code: 'paid money', title: 'paid money'},
+    {code: 'recorded', title: 'recorded'},
+    {code: 'paid nft', title: 'paid nft'},
   ]
   const handleLabelSwitch = (e) => {
     setLabel(e.target.value);
-    if (filterValue === '' || filterValue.search(/label:\w+/g) === -1){
-      setFilterValue(e.target.value !== '' ? `${filterValue} label:${e.target.value}`: filterValue);
+    if (filterValue === '' || filterValue.search(/label:"[\w\s]+"/g) === -1){
+      setFilterValue(e.target.value !== '' ? `${filterValue} label:"${e.target.value}"`: filterValue);
       return
     }
-    let _fv = filterValue.replace(/label:\w+/g, e.target.value !== '' ? `label:${e.target.value}`: '');
+    let _fv = filterValue.replace(/label:"[\w\s]+"/g, e.target.value !== '' ? `label:"${e.target.value}"`: '');
     console.log(_fv);
     setFilterValue(_fv)
   }
@@ -204,6 +208,7 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
                 {issues.map(issue => (
                   <Link key={issue.id} to={`/${issue.repository_url.split('https://api.github.com/repos/')[1]}/issues/${issue.number}`}>
                     <IssueListItem
+                      key={issue.id}
                       number={issue.number}
                       title={issue.title}
                       author={issue.user ? issue.user.login : undefined}
