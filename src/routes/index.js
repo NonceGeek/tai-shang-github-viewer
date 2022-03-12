@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import IssuePage from './IssuePage';
-import SearchPage from './SearchPage';
+import ProjectViewPage from './ProjectViewPage';
 import OrgIssuePage from './OrgIssuePage';
 import OrgPage from './OrgPage';
 import RepoPage from './RepoPage';
@@ -19,6 +19,7 @@ const Routes = () => (
     <Route path="/:owner/issues" exact component={OrgIssuePage} />
     <Route path="/:owner/:name" exact component={RepoPage} />
     <Route path="/:owner/:name/issues/:number" exact component={IssuePage} />
+    <Route path="/:owner/projects/:projectId/views/:viewId" exact component={ProjectViewPage} />
     <Route component={NotFoundPage} />
   </Switch>
 );

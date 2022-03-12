@@ -102,6 +102,7 @@ class Layout extends React.Component {
               <Typography variant="h6">
                 <Span className={classes.allissue}><Link to="/WeLightProject">Repos</Link></Span>
                 <Span className={classes.span}><Link to="/WeLightProject/issues">Issues</Link></Span>
+                <Span className={classes.span}><Link to="/WeLightProject/projects/4/views/1">Hackathon</Link></Span>
               </Typography>
               <div className={classes.grow} />
               {/* <form onSubmit={this.onSubmitSearch}>

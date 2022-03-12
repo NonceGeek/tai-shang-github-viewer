@@ -21,7 +21,8 @@ const isLocalhost = Boolean(
 );
 
 export function register(config) {
-  if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  console.log("registering service worker");
+  if (process.env.NODE_ENV === 'development' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
     if (publicUrl.origin !== window.location.origin) {
@@ -40,10 +41,12 @@ export function register(config) {
 
         // Add some additional logging to localhost, pointing developers to the
         // service worker/PWA documentation.
-        navigator.serviceWorker.ready.then(() => {
+        navigator.serviceWorker.ready.then((registration) => {
+          console.log('Registration succeeded. Scope is ' + registration.scope);
+          registration.active.postMessage({ code: "get-client-id" });
           console.log(
             'This web app is being served cache-first by a service ' +
-              'worker. To learn more, visit http://bit.ly/CRA-PWA'
+            'worker. To learn more, visit http://bit.ly/CRA-PWA'
           );
         });
       } else {
@@ -51,6 +54,45 @@ export function register(config) {
         registerValidSW(swUrl, config);
       }
     });
+
+    let windowClientId = '';
+    let iframeClientId = '';
+
+    window.addEventListener('message', (event) => {
+      console.log("=====>message", event.data);
+      if (event.data.code === 'get-client-id') {
+        window.clients.matchAll().then(function (clients) {
+          clients.forEach(function (client) {
+            if (client.frameType === "top-level") {
+              windowClientId = client.id
+            } else if (client.frameType === "nested") {
+              iframeClientId = client.id
+            }
+          });
+        });
+      }
+    });
+
+    window.addEventListener('fetch', async (event) => {
+      console.log("=====fetch");
+      // Don't process any requests if worker/iframe are not activated fully
+      if (!windowClientId || !iframeClientId) {
+        return;
+      }
+      // Don't process main window resources
+      if (event.clientId === windowClientId) {
+        return;
+      }
+      // do smth
+      const {request} = event;
+      const response = await fetch(request);
+      // 3.拷贝克隆请求
+      // 4.篡改响应头
+      response.headers.delete('Content-Security-Policy');
+      response.headers.delete('X-Frame-Options');
+
+      event.respondWith(Promise.resolve(response));
+    })
   }
 }
 
@@ -71,7 +113,7 @@ function registerValidSW(swUrl, config) {
               // content until all client tabs are closed.
               console.log(
                 'New content is available and will be used when all ' +
-                  'tabs for this page are closed. See http://bit.ly/CRA-PWA.'
+                'tabs for this page are closed. See http://bit.ly/CRA-PWA.'
               );
 
               // Execute callback
