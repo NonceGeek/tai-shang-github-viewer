@@ -49,7 +49,12 @@ const styles = theme => ({
 const Search = ({ classes, children, location }) => {
   const { q } = queryString.parse(location.search);
 
-  const octokit = new Octokit({});
+  const [auth, setAuth] = useState(() => {
+    const initialValue = localStorage.getItem("access_token");
+    return initialValue || "";
+  });
+
+  const octokit = new Octokit({auth: auth});
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
 

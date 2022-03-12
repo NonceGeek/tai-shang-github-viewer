@@ -26,7 +26,12 @@ import IssueComment from './IssueComment';
 
 const IssueCommentList = ({ owner, name, number, placeholderCount }) => {
 
-  const octokit = new Octokit({});
+  const [auth, setAuth] = useState(() => {
+    const initialValue = localStorage.getItem("access_token");
+    return initialValue || "";
+  });
+
+  const octokit = new Octokit({auth: auth});
   const [comments, setComments] = useState([]);
 
   const [loading, setLoading] = useState(true);

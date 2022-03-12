@@ -49,7 +49,12 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
   // const { q } = queryString.parse(location.search);
   const { owner } = match.params;
 
-  const octokit = new Octokit({});
+  const [auth, setAuth] = useState(() => {
+    const initialValue = localStorage.getItem("access_token");
+    return initialValue || "";
+  });
+
+  const octokit = new Octokit({auth: auth});
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);

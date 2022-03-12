@@ -45,7 +45,12 @@ const Issue = (props) => {
   const { owner, name } = match.params;
   const issueNumber = Number(match.params.number);
 
-  const octokit = new Octokit({});
+  const [auth, setAuth] = useState(() => {
+    const initialValue = localStorage.getItem("access_token");
+    return initialValue || "";
+  });
+
+  const octokit = new Octokit({auth: auth});
   const [issue, setIssue] = useState({});
 
   const [loading, setLoading] = useState(true);

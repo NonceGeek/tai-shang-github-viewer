@@ -53,7 +53,12 @@ const OrgPage = ({ classes, children, match, location }) => {
   //   const { classes, match, location } = props;
   const { owner } = match.params;
 
-  const octokit = new Octokit({});
+  const [auth, setAuth] = useState(() => {
+    const initialValue = localStorage.getItem("access_token");
+    return initialValue || "";
+  });
+
+  const octokit = new Octokit({auth: auth});
   const [repos, setRepos] = useState([]);
   const [org, setOrg] = useState({});
   const [loading, setLoading] = useState(true);

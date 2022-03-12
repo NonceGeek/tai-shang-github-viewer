@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
@@ -9,7 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
 import ThemeToggle from './ThemeToggle';
-// import InputSearch from './InputSearch';
+import InputSave from './InputSave';
 import GithubIcon from '../svgIcons/Github';
 
 import { Span } from './Skeleton';
@@ -52,10 +52,7 @@ const styles = theme => {
     },
     searchInput: {
       transition: theme.transitions.create('width'),
-      width: 110,
-      '&:focus': {
-        width: 180,
-      }
+      width: 180,
     },
     grow: {
       flex: 1,
@@ -70,60 +67,53 @@ const styles = theme => {
 };
 
 
-class Layout extends React.Component {
-  static propTypes = {
-    classes: PropTypes.objectOf(PropTypes.string),
-    children: PropTypes.node,
-    history: PropTypes.object.isRequired,
-  };
-
-  constructor(props) {
-    super(props);
-    this.input = React.createRef();
-  }
-
-  onSubmitSearch = (e) => {
+function Layout(props) {
+  let input = useRef(null);
+  const onSubmitSave = (e) => {
     e.preventDefault();
-    const { history } = this.props;
-    const q = this.input.current.value;
-    history.push(`/search?q=${q}`);
+    localStorage.setItem('access_token', input.current.value);
   }
 
-  render() {
-    const { classes, children } = this.props;
-    return (
-      <div>
-        <AppBar elevation={0} className={classes.appBar} position="static">
-          <Toolbar className={classes.toolbar}>
-            <div className={cx(classes.toolbarContent, classes.centered)}>
-              <Link to="/">
-                <GithubIcon className={classes.logo} />
-              </Link>
-              <Typography variant="h6">
-                <Span className={classes.allissue}><Link to="/WeLightProject">Repos</Link></Span>
-                <Span className={classes.span}><Link to="/WeLightProject/issues">Issues</Link></Span>
-                <Span className={classes.span}><a href="https://github.com/orgs/WeLightProject/projects/4/views/1" target="_blank">Hackathon</a></Span>
-              </Typography>
-              <div className={classes.grow} />
-              {/* <form onSubmit={this.onSubmitSearch}>
-                <InputSearch
-                  fullWidth={false}
-                  placeholder="Search for repo"
-                  inputProps={{
-                    ref: this.input,
-                    className: classes.searchInput,
-                  }}
-                />
-              </form> */}
-              <ThemeToggle />
-            </div>
-          </Toolbar>
-        </AppBar>
-        {children}
-      </div>
-    );
-  }
+  const { classes, children } = props;
+
+  return (
+    <div>
+      <AppBar elevation={0} className={classes.appBar} position="static">
+        <Toolbar className={classes.toolbar}>
+          <div className={cx(classes.toolbarContent, classes.centered)}>
+            <Link to="/">
+              <GithubIcon className={classes.logo} />
+            </Link>
+            <Typography variant="h6">
+              <Span className={classes.allissue}><Link to="/WeLightProject">Repos</Link></Span>
+              <Span className={classes.span}><Link to="/WeLightProject/issues">Issues</Link></Span>
+              <Span className={classes.span}><a href="https://github.com/orgs/WeLightProject/projects/4/views/1" target="_blank">Hackathon</a></Span>
+            </Typography>
+            <div className={classes.grow} />
+            <form onSubmit={onSubmitSave}>
+              <InputSave
+                fullWidth={false}
+                placeholder="Add github access token"
+                inputProps={{
+                  ref: input,
+                  className: classes.searchInput,
+                }}
+              />
+            </form>
+            <ThemeToggle />
+          </div>
+        </Toolbar>
+      </AppBar>
+      {children}
+    </div>
+  );
 }
+
+Layout.propTypes = {
+  classes: PropTypes.objectOf(PropTypes.string),
+  children: PropTypes.node,
+  history: PropTypes.object.isRequired,
+};
 
 export default compose(
   withRouter,

@@ -22,7 +22,12 @@ const ProjectViewPage = (props) => {
   const { classes, match } = props;
   const { owner, projectId, viewId } = match.params;
 
-  const octokit = new Octokit({});
+  const [auth, setAuth] = useState(() => {
+    const initialValue = localStorage.getItem("access_token");
+    return initialValue || "";
+  });
+
+  const octokit = new Octokit({auth: auth});
 
   const [org, setOrg] = useState({});
   useEffect(() => {

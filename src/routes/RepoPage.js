@@ -47,7 +47,12 @@ const styles = theme => ({
 
 const RepoPage = (props) => {
 
-  const octokit = new Octokit({});
+  const [auth, setAuth] = useState(() => {
+    const initialValue = localStorage.getItem("access_token");
+    return initialValue || "";
+  });
+
+  const octokit = new Octokit({auth: auth});
   const [repository, setRepository] = useState();
 
   const { classes, match, location } = props;

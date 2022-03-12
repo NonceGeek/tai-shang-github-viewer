@@ -21,7 +21,12 @@ import { withSkeletonProvider } from './Skeleton';
 
 const IssueListFilter = ({ classes, state, onChange, name, owner, q,...otherProps }) => {
 
-  const octokit = new Octokit({});
+  const [auth, setAuth] = useState(() => {
+    const initialValue = localStorage.getItem("access_token");
+    return initialValue || "";
+  });
+
+  const octokit = new Octokit({auth: auth});
   const [openedCount, setOpenedCount] = useState(0);
   const [closedCount, setClosedCount] = useState(0);
 
