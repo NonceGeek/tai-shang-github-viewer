@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import cx from 'classnames';
@@ -69,9 +69,15 @@ const styles = theme => {
 
 function Layout(props) {
   let input = useRef(null);
+  const [loading, setLoading] = useState(false);
+  
   const onSubmitSave = (e) => {
+    setLoading(true);
     e.preventDefault();
     localStorage.setItem('access_token', input.current.value);
+    setTimeout(function(){
+      setLoading(false);
+   }, 1000);
   }
 
   const { classes, children } = props;
@@ -98,6 +104,7 @@ function Layout(props) {
                   ref: input,
                   className: classes.searchInput,
                 }}
+                loading={loading}
               />
             </form>
             <ThemeToggle />

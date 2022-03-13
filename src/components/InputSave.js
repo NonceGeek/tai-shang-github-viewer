@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Save from '@material-ui/icons/Save';
 import IconButton from '@material-ui/core/IconButton';
+import { CircularProgress } from '@material-ui/core';
 import InputBase from './InputBase';
 
 const styles = theme => ({
@@ -19,7 +20,7 @@ const styles = theme => ({
   },
 });
 
-const InputSearch = ({ classes, ...props }) => (
+const InputSave = ({ classes, loading, ...props }) => (
   <InputBase
     endAdornment={
       <InputAdornment position="end">
@@ -30,7 +31,7 @@ const InputSearch = ({ classes, ...props }) => (
           className={classes.searchButton}
           type="submit"
         >
-         <Save />
+         {loading?<CircularProgress size={25}/>:<Save />}
         </IconButton>
       </InputAdornment>
     }
@@ -38,12 +39,17 @@ const InputSearch = ({ classes, ...props }) => (
   />
 );
 
-InputSearch.propTypes = {
+InputSave.propTypes = {
   classes: PropTypes.objectOf(PropTypes.string),
   className: PropTypes.string,
   placeholder: PropTypes.string,
   onChange: PropTypes.func,
   value: PropTypes.string,
+  loading: PropTypes.bool,
 };
 
-export default withStyles(styles)(InputSearch);
+InputSave.defaultProps = {
+  loading: false,
+};
+
+export default withStyles(styles)(InputSave);
