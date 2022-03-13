@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-
+import { Provider } from 'react-redux'
 import App from './App';
+import store from './store';
 import * as serviceWorker from './serviceWorker';
 import Theme from './components/Theme';
 import CssBaseline from './components/CssBaseline';
@@ -11,7 +12,9 @@ ReactDOM.render(
   <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Theme>
         <CssBaseline>
+        <Provider store={store}>
           <App />
+          </Provider>
         </CssBaseline>
       </Theme>
   </BrowserRouter>,
