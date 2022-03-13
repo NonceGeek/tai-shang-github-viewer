@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Octokit } from '@octokit/rest';
+import { setIssueOpenCount, setIssueClosedCount } from '../store/actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 // const ISSUES_QUERY = gql`
 //   query IssuesList($owner: String!, $name: String!, $state: [IssueState!], $cursor: String, $pageSize: Int) {
@@ -33,7 +35,7 @@ import { Octokit } from '@octokit/rest';
 // `;
 
 const IssuesLoader = ({ children, owner, name, state, q, pageSize }) => {
-
+  let dispatch = useDispatch();
   const [auth, setAuth] = useState(() => {
     const initialValue = localStorage.getItem("access_token");
     return initialValue || "";
@@ -45,16 +47,6 @@ const IssuesLoader = ({ children, owner, name, state, q, pageSize }) => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    // const getData = async () => {
-    //   let data = await octokit.rest.issues.listForRepo({
-    //     owner,
-    //     repo: name,
-    //     state: state.toLowerCase(),
-    //   }).then(res => res.data);
-    //   setLoading(false);
-    //   setIssues(data);
-    // }
-    // getData();
     loadMore(1);
   }, [state, q])
 
@@ -66,23 +58,64 @@ const IssuesLoader = ({ children, owner, name, state, q, pageSize }) => {
         repo: name,
         page: page,
         state: state.toLowerCase(),
-      }).then(res => res.data);
-      setIssues(data);
+      }).then(res => {
+        let _issues = res.data;
+        setIssues(_issues);
+      });
+      
     } else {
       let _q = `${q}+repo:${owner}/${name}+type:issue+state:${state.toLowerCase()}`;
       data = await octokit.rest.search.issuesAndPullRequests({
         q: _q,
         page: page,
-      }).then(res => res.data);
-      setIssues(data.items);
+      }).then(res => {
+        let _issues = res.data;
+        setIssues(_issues.items);
+        if (state.toLowerCase() === "open") {
+          dispatch(setIssueOpenCount(_issues.total_count));
+        } else {
+          dispatch(setIssueClosedCount(data.total_count));
+        }
+      });
+      
     }
     setLoading(false);
     return data;
   }
 
   useEffect(() => {
-    loadMore(1);
+    calIssueCount();
   }, [q])
+
+  const calIssueCount = async () => {
+    if (q === '') {
+      let _q = `${q}+repo:${owner}/${name}+type:issue+state:${state.toLowerCase()}`;
+      await octokit.rest.search.issuesAndPullRequests({
+        q: _q,
+        per_page: 1,
+      }).then(res => {
+        let data = res.data;
+        if (state.toLowerCase() === "open") {
+          dispatch(setIssueOpenCount(data.total_count));
+        } else {
+          dispatch(setIssueClosedCount(data.total_count));
+        }
+      });
+    }
+    let _state = state.toLowerCase() === "open" ? "closed" : "open";
+    let _q = `${q}+repo:${owner}/${name}+type:issue+state:${_state}`;
+    await octokit.rest.search.issuesAndPullRequests({
+      q: _q,
+      per_page: 1,
+    }).then(res => {
+      let data = res.data;
+      if (_state === "open") {
+        dispatch(setIssueOpenCount(data.total_count));
+      } else {
+        dispatch(setIssueClosedCount(data.total_count));
+      }
+    });
+  }
 
   return children({
     loading,

@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import { Octokit } from "@octokit/rest";
 import { Select, MenuItem, Button, InputLabel } from "@material-ui/core";
+import { useDispatch } from 'react-redux';
+import { setIssueOpenCount, setIssueClosedCount } from '../store/actions';
 
 import Content from '../components/LayoutContent';
 import Header from '../components/LayoutHeader';
@@ -47,6 +49,7 @@ const styles = theme => ({
 
 const OrgIssuePage = ({ classes, match, location, history }) => {
   // const { q } = queryString.parse(location.search);
+  let dispatch = useDispatch();
   const { owner } = match.params;
 
   const [auth, setAuth] = useState(() => {
@@ -76,6 +79,27 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
     getIssues();
   }, [stateValue, page, filterValue])
 
+  useEffect(() => {
+    calIssueCount();
+  }, [filterValue])
+
+  const calIssueCount = async () => {
+    let _stateValue = stateValue === "open" ? "closed" : "open";
+    let _q = `${filterValue}+org:${owner}+type:issue+state:${_stateValue}`;
+    await octokit.rest.search.issuesAndPullRequests({
+      q: _q,
+      per_page: 1,
+    }).then(res => {
+      let data = res.data;
+      if (_stateValue === "open") {
+        dispatch(setIssueOpenCount(data.total_count));
+      } else {
+        dispatch(setIssueClosedCount(data.total_count));
+      }
+
+    });
+  }
+
   const getOrg = async () => {
     let data = await octokit.rest.orgs.get({
       org: owner,
@@ -86,7 +110,6 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
   const getIssues = async (page) => {
     setLoading(true);
     setIsError(false);
-    console.log(stateValue);
     let q = `${filterValue}+org:${owner}+type:issue+state:${stateValue}`;
     await octokit.rest.search.issuesAndPullRequests({
       q,
@@ -95,6 +118,11 @@ const OrgIssuePage = ({ classes, match, location, history }) => {
       let data = res.data;
       setIssues(data.items);
       setLoading(false);
+      if (stateValue === "open") {
+        dispatch(setIssueOpenCount(data.total_count));
+      } else {
+        dispatch(setIssueClosedCount(data.total_count));
+      }
     }).catch(err => {
       setLoading(false);
       setIsError(true);
