@@ -91,9 +91,9 @@ function Layout(props) {
               <GithubIcon className={classes.logo} />
             </Link>
             <Typography variant="h6">
-              <Span className={classes.allissue}><Link to="/WeLightProject">Repos</Link></Span>
-              <Span className={classes.span}><Link to="/WeLightProject/issues">Issues</Link></Span>
-              <Span className={classes.span}><a href="https://github.com/orgs/WeLightProject/projects/4/views/1" target="_blank">Hackathon</a></Span>
+              <Span className={classes.allissue}><Link to="/NonceGeek">Repos</Link></Span>
+              <Span className={classes.span}><Link to="/NonceGeek/issues">Issues</Link></Span>
+              <Span className={classes.span}><a href="https://github.com/orgs/NonceGeek/projects/4/views/1" target="_blank">Hackathon</a></Span>
             </Typography>
             <div className={classes.grow} />
             <form onSubmit={onSubmitSave}>

@@ -11,7 +11,7 @@ import NotFoundPage from './NotFoundPage';
 const Routes = () => (
   <Switch>
     <Route exact path="/">
-      <Redirect to="/WeLightProject" />
+      <Redirect to="/NonceGeek" />
     </Route>
     {/* <Route path="/" exact component={SearchPage} /> */}
     {/* <Route path="/search" component={SearchPage} /> */}
@@ -20,10 +20,10 @@ const Routes = () => (
     <Route path="/:owner/:name" exact component={RepoPage} />
     <Route path="/:owner/:name/issues/:number" exact component={IssuePage} />
     {/* <Route path="/:owner/projects/:projectId/views/:viewId" exact component={() => {
-      // window.location.href = 'https://github.com/orgs/WeLightProject/projects/4/views/1';
+      // window.location.href = 'https://github.com/orgs/NonceGeek/projects/4/views/1';
       // return null;
       window.open(
-        'https://github.com/orgs/WeLightProject/projects/4/views/1',
+        'https://github.com/orgs/NonceGeek/projects/4/views/1',
         '_blank'
       );
     }} /> */}
